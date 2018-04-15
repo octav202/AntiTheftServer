@@ -7,8 +7,14 @@ public class Location {
 	private double lon;
 	private String timeStamp;
 	
+	public Location() {
+		this.deviceId = 0;
+		this.lat = 0;
+		this.lon = 0;
+		this.timeStamp = "";
+	}
+	
 	public Location(int deviceId, double lat, double lon, String timeStamp) {
-		super();
 		this.deviceId = deviceId;
 		this.lat = lat;
 		this.lon = lon;
