@@ -78,16 +78,17 @@ public class Controller {
 		return new ResponseEntity<Location>(location, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/getLocation")
-	public ResponseEntity<Void> getLocation(@RequestParam(value = "id", defaultValue = "0") String id) {
+	@RequestMapping(value = "/getLocation", method = RequestMethod.GET)
+	public ResponseEntity<List<Location>> getLocation(@RequestParam(value = "id", defaultValue = "0") String id) {
 		List<Location> deviceLocs = new ArrayList<Location>();
 		Integer deviceId = Integer.parseInt(id);
 
 		for (Location loc : locations) {
 			if (loc.getDeviceId() == deviceId) {
 				deviceLocs.add(loc);
+				System.out.print("Found Location : " + loc);
 			}
 		}
-		return new ResponseEntity<>(HttpStatus.OK);
+		return new ResponseEntity<List<Location>>(deviceLocs, HttpStatus.OK);
 	}
 }
