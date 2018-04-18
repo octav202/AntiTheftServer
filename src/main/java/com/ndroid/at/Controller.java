@@ -39,6 +39,7 @@ public class Controller {
 	// Device
 	@RequestMapping(value = "/getDevice")
 	public ResponseEntity<Device> getDevice(@RequestParam(value = "id", defaultValue = "0") String id) {
+		System.out.print("\n getDevice() : " + id);
 		Device device = devices.get(Integer.parseInt(id));
 		return new ResponseEntity<Device>(device, HttpStatus.OK);
 	}
@@ -47,6 +48,7 @@ public class Controller {
 	public ResponseEntity<Integer> getDeviceId(@RequestParam Map<String,String> requestParams) {
 		String name = requestParams.get("name");
 		String pass = requestParams.get("pass");
+		System.out.print("\n getDeviceId() : " + name + ", " + pass);
 		Iterator<Entry<Integer, Device>> it = devices.entrySet().iterator();
 		int id = 0;
 		while (it.hasNext()) {
@@ -62,6 +64,7 @@ public class Controller {
 
 	@RequestMapping(value = "/addDevice", method = RequestMethod.POST)
 	public ResponseEntity<Device> update(@RequestBody Device device) {
+		System.out.print("\n addDevice() : " + device);
 		if (device != null) {
 			devices.put(device.getDeviceId(), device);
 		}
@@ -72,6 +75,8 @@ public class Controller {
 
 	@RequestMapping(value = "/sendLocation", method = RequestMethod.POST)
 	public ResponseEntity<Location> send(@RequestBody Location location) {
+		System.out.print("\n sendLocation() : " + location);
+		
 		if (location != null) {
 			locations.add(location);
 		}
@@ -80,13 +85,14 @@ public class Controller {
 
 	@RequestMapping(value = "/getLocation", method = RequestMethod.GET)
 	public ResponseEntity<List<Location>> getLocation(@RequestParam(value = "id", defaultValue = "0") String id) {
+		System.out.print("\n getLocation() : " + id);
+		
 		List<Location> deviceLocs = new ArrayList<Location>();
 		Integer deviceId = Integer.parseInt(id);
 
 		for (Location loc : locations) {
 			if (loc.getDeviceId() == deviceId) {
 				deviceLocs.add(loc);
-				System.out.print("Found Location : " + loc);
 			}
 		}
 		return new ResponseEntity<List<Location>>(deviceLocs, HttpStatus.OK);
