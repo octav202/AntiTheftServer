@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ndroid.at.models.Device;
+import com.ndroid.at.models.DeviceStatus;
 import com.ndroid.at.models.Location;
 
 @RestController
@@ -23,6 +24,7 @@ public class Controller {
 
 	private static HashMap<Integer, Device> devices = new HashMap<Integer, Device>();
 	private static List<Location> locations = new ArrayList<Location>();
+	private static HashMap<Integer, DeviceStatus> deviceStatuses = new HashMap<Integer, DeviceStatus>();
 	static {
 		devices.put(1, new Device(1, "Device1", "Pass1"));
 		devices.put(2, new Device(2, "Device2", "Pass2"));
@@ -34,6 +36,8 @@ public class Controller {
 		locations.add(new Location(1, 40.0, 40.0, "10:04"));
 		locations.add(new Location(1, 50.0, 50.0, "10:05"));
 		locations.add(new Location(1, 60.0, 60.0, "10:06"));
+
+		deviceStatuses.put(1, new DeviceStatus(1, 1, 1, 1));
 	}
 
 	// Device
@@ -45,20 +49,20 @@ public class Controller {
 	}
 
 	@RequestMapping(value = "/getDeviceId")
-	public ResponseEntity<Integer> getDeviceId(@RequestParam Map<String,String> requestParams) {
+	public ResponseEntity<Integer> getDeviceId(@RequestParam Map<String, String> requestParams) {
 		String name = requestParams.get("name");
 		String pass = requestParams.get("pass");
 		System.out.print("\n getDeviceId() : " + name + ", " + pass);
 		Iterator<Entry<Integer, Device>> it = devices.entrySet().iterator();
 		int id = 0;
 		while (it.hasNext()) {
-			Map.Entry<Integer, Device> entry= (Entry<Integer, Device>) it.next();
+			Map.Entry<Integer, Device> entry = (Entry<Integer, Device>) it.next();
 			Device device = entry.getValue();
 			if (device.getDeviceName().equals(name) && device.getDevicePass().equals(pass)) {
 				id = device.getDeviceId();
 			}
 		}
-		
+
 		return new ResponseEntity<Integer>(id, HttpStatus.OK);
 	}
 
@@ -76,7 +80,7 @@ public class Controller {
 	@RequestMapping(value = "/sendLocation", method = RequestMethod.POST)
 	public ResponseEntity<Location> send(@RequestBody Location location) {
 		System.out.print("\n sendLocation() : " + location);
-		
+
 		if (location != null) {
 			locations.add(location);
 		}
@@ -86,7 +90,7 @@ public class Controller {
 	@RequestMapping(value = "/getLocation", method = RequestMethod.GET)
 	public ResponseEntity<List<Location>> getLocation(@RequestParam(value = "id", defaultValue = "0") String id) {
 		System.out.print("\n getLocation() : " + id);
-		
+
 		List<Location> deviceLocs = new ArrayList<Location>();
 		Integer deviceId = Integer.parseInt(id);
 
@@ -97,4 +101,23 @@ public class Controller {
 		}
 		return new ResponseEntity<List<Location>>(deviceLocs, HttpStatus.OK);
 	}
+
+	// Device Status
+	@RequestMapping(value = "/sendDeviceStatus", method = RequestMethod.POST)
+	public ResponseEntity<DeviceStatus> sendDeviceStatus(@RequestBody DeviceStatus deviceStatus) {
+		System.out.print("\n sendDeviceStatus() : " + deviceStatus);
+
+		if (deviceStatuses != null) {
+			deviceStatuses.put(deviceStatus.getDeviceId(), deviceStatus);
+		}
+		return new ResponseEntity<DeviceStatus>(deviceStatus, HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/getDeviceStatus")
+	public ResponseEntity<DeviceStatus> getDeviceStatus(@RequestParam(value = "id", defaultValue = "0") String id) {
+		System.out.print("\n getDeviceStatus() : " + id);
+		DeviceStatus deviceStatus = deviceStatuses.get(Integer.parseInt(id));
+		return new ResponseEntity<DeviceStatus>(deviceStatus, HttpStatus.OK);
+	}
+
 }
