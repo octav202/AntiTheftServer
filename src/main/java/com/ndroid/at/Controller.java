@@ -37,7 +37,7 @@ public class Controller {
 		locations.add(new Location(1, 50.0, 50.0, "10:05"));
 		locations.add(new Location(1, 60.0, 60.0, "10:06"));
 
-		deviceStatuses.put(1, new DeviceStatus(1, 1, 1, 1));
+		deviceStatuses.put(1, new DeviceStatus(1, 1, 1, 1, 1, 0));
 	}
 
 	// Device
@@ -112,7 +112,7 @@ public class Controller {
 		}
 		return new ResponseEntity<DeviceStatus>(deviceStatus, HttpStatus.OK);
 	}
-	
+
 	@RequestMapping(value = "/getDeviceStatus")
 	public ResponseEntity<DeviceStatus> getDeviceStatus(@RequestParam(value = "id", defaultValue = "0") String id) {
 		System.out.print("\n getDeviceStatus() : " + id);
