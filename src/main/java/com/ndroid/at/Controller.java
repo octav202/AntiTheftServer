@@ -37,7 +37,7 @@ public class Controller {
 		locations.add(new Location(1, 50.0, 50.0, "10:05"));
 		locations.add(new Location(1, 60.0, 60.0, "10:06"));
 
-		deviceStatuses.put(1, new DeviceStatus(1, 1, 1, 1, 1, 0));
+		deviceStatuses.put(1, new DeviceStatus(1, 1, 1, 1, 1, 1, 0));
 	}
 
 	// Device
@@ -82,6 +82,13 @@ public class Controller {
 		System.out.print("\n sendLocation() : " + location);
 
 		if (location != null) {
+			for (Location loc:locations) {
+				if (location.isEqualTo(loc)) {
+					System.out.println("\n Location already stored.");
+					return new ResponseEntity<Location>(location, HttpStatus.OK);
+				}
+			}
+			
 			locations.add(location);
 		}
 		return new ResponseEntity<Location>(location, HttpStatus.OK);

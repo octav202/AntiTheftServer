@@ -49,4 +49,9 @@ public class Location {
 		return "Location [deviceId=" + deviceId + ", lat=" + lat + ", lon=" + lon + ", timeStamp=" + timeStamp + "]";
 	}
 	
+	public boolean isEqualTo(Location location) {
+		return (this.deviceId == location.getDeviceId() && this.getLat() == location.getLat()
+				&& this.getLon() == location.getLon());
+	}
+	
 }
