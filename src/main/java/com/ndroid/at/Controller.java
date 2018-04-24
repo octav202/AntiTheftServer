@@ -26,18 +26,15 @@ public class Controller {
 	private static List<Location> locations = new ArrayList<Location>();
 	private static HashMap<Integer, DeviceStatus> deviceStatuses = new HashMap<Integer, DeviceStatus>();
 	static {
-		devices.put(1, new Device(1, "Device1", "Pass1"));
-		devices.put(2, new Device(2, "Device2", "Pass2"));
-		devices.put(3, new Device(3, "Device3", "Pass3"));
 
-		locations.add(new Location(1, 10.0, 10.0, "10:01"));
-		locations.add(new Location(1, 20.0, 20.0, "10:02"));
-		locations.add(new Location(1, 30.0, 30.0, "10:03"));
-		locations.add(new Location(1, 40.0, 40.0, "10:04"));
-		locations.add(new Location(1, 50.0, 50.0, "10:05"));
-		locations.add(new Location(1, 60.0, 60.0, "10:06"));
+//		locations.add(new Location(1, 10.0, 10.0, "10:01"));
+//		locations.add(new Location(1, 20.0, 20.0, "10:02"));
+//		locations.add(new Location(1, 30.0, 30.0, "10:03"));
+//		locations.add(new Location(1, 40.0, 40.0, "10:04"));
+//		locations.add(new Location(1, 50.0, 50.0, "10:05"));
+//		locations.add(new Location(1, 60.0, 60.0, "10:06"));
 
-		deviceStatuses.put(1, new DeviceStatus(1, 1, 1, 1, 1, 1, 0));
+//		deviceStatuses.put(1, new DeviceStatus(1, 1, 1, 1, 1, 1, 0));
 	}
 
 	// Device
@@ -66,13 +63,30 @@ public class Controller {
 		return new ResponseEntity<Integer>(id, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/addDevice", method = RequestMethod.POST)
-	public ResponseEntity<Device> update(@RequestBody Device device) {
-		System.out.print("\n addDevice() : " + device);
-		if (device != null) {
-			devices.put(device.getDeviceId(), device);
+	@RequestMapping(value = "/addDevice")
+	public ResponseEntity<Integer> addDevice(@RequestParam Map<String, String> requestParams) {
+		String name = requestParams.get("name");
+		String pass = requestParams.get("pass");
+		System.out.print("\n addDevice : " + name + ", " + pass);
+		Iterator<Entry<Integer, Device>> it = devices.entrySet().iterator();
+		int max = 0;
+		while (it.hasNext()) {
+			Map.Entry<Integer, Device> entry = (Entry<Integer, Device>) it.next();
+			Device device = entry.getValue();
+			if (device.getDeviceId() > max) {
+				max = device.getDeviceId();
+			}
 		}
-		return new ResponseEntity<Device>(device, HttpStatus.OK);
+
+		int nextId = max +1;
+		Device device = new Device(nextId, name, pass);
+		System.out.print("\n Device added : " + device);
+		devices.put(device.getDeviceId(), device);
+		
+		// Add Initial Device Status
+		deviceStatuses.put(device.getDeviceId(), new DeviceStatus(device.getDeviceId(), 0, 0, 0, 0, 0, 0));
+		
+		return new ResponseEntity<Integer>(nextId, HttpStatus.OK);
 	}
 
 	// Location
