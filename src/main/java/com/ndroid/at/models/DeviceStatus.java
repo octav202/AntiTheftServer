@@ -8,6 +8,7 @@ public class DeviceStatus {
 	private Integer encryptStorage;
 	private Integer reboot;
 	private Integer locationFrequency;
+	private Integer ring;
 	private Integer triggered;
 	
 	public DeviceStatus() {
@@ -17,17 +18,19 @@ public class DeviceStatus {
 		this.encryptStorage = 0;
 		this.reboot = 0;
 		this.triggered = 0;
+		this.ring = 0;
 		this.locationFrequency = 0;
 	}
 	
 	public DeviceStatus(int deviceId, Integer lock, Integer wipeData, Integer encryptStorage,
-			Integer reboot, Integer frequency, Integer triggered) {
+			Integer reboot, Integer frequency, Integer ring, Integer triggered) {
 		this.deviceId = deviceId;
 		this.lock = lock;
 		this.wipeData = wipeData;
 		this.encryptStorage = encryptStorage;
 		this.reboot = reboot;
 		this.locationFrequency = frequency;
+		this.ring = ring;
 		this.triggered = triggered;
 	}
 	
@@ -73,13 +76,19 @@ public class DeviceStatus {
 	public void setTriggered(Integer triggered) {
 		this.triggered = triggered;
 	}
-	
-	
+	public Integer getRing() {
+		return ring;
+	}
+	public void setRing(Integer ring) {
+		this.ring = ring;
+	}
+
 	@Override
 	public String toString() {
 		return "DeviceStatus [deviceId=" + deviceId + ", lock=" + lock + ", wipeData=" + wipeData + ", encryptStorage="
-				+ encryptStorage + ", reboot=" + reboot + ", locationFrequency=" + locationFrequency + ", triggered="
-				+ triggered + "]";
+				+ encryptStorage + ", reboot=" + reboot + ", locationFrequency=" + locationFrequency + ", ring=" + ring
+				+ ", triggered=" + triggered + "]";
 	}
+	
 
 }

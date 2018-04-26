@@ -82,10 +82,10 @@ public class Controller {
 		Device device = new Device(nextId, name, pass);
 		System.out.print("\n Device added : " + device);
 		devices.put(device.getDeviceId(), device);
-		
+
 		// Add Initial Device Status
-		deviceStatuses.put(device.getDeviceId(), new DeviceStatus(device.getDeviceId(), 0, 0, 0, 0, 0, 0));
-		
+		deviceStatuses.put(device.getDeviceId(), new DeviceStatus(device.getDeviceId(), 0, 0, 0, 0, 0, 0, 0));
+
 		return new ResponseEntity<Integer>(nextId, HttpStatus.OK);
 	}
 
@@ -131,6 +131,8 @@ public class Controller {
 		if (deviceStatuses != null) {
 			deviceStatuses.put(deviceStatus.getDeviceId(), deviceStatus);
 		}
+		
+		System.out.print("\n sendDeviceStatus: " + deviceStatus);
 		return new ResponseEntity<DeviceStatus>(deviceStatus, HttpStatus.OK);
 	}
 
@@ -138,6 +140,8 @@ public class Controller {
 	public ResponseEntity<DeviceStatus> getDeviceStatus(@RequestParam(value = "id", defaultValue = "0") String id) {
 		System.out.print("\n getDeviceStatus() : " + id);
 		DeviceStatus deviceStatus = deviceStatuses.get(Integer.parseInt(id));
+		
+		System.out.print("\n getDeviceStatus: " + deviceStatus);
 		return new ResponseEntity<DeviceStatus>(deviceStatus, HttpStatus.OK);
 	}
 
