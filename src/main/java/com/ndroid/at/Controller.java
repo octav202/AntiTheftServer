@@ -122,6 +122,29 @@ public class Controller {
 		}
 		return new ResponseEntity<List<Location>>(deviceLocs, HttpStatus.OK);
 	}
+	
+	@RequestMapping(value = "/simulateLocation", method = RequestMethod.GET)
+	public ResponseEntity<Boolean> simulateLocation(@RequestParam(value = "id", defaultValue = "0") String id) {
+		System.out.print("\n simulateLocation() : " + id);
+
+		Integer deviceId = Integer.parseInt(id);
+
+		Location lastLocation = null;
+		for (Location loc : locations) {
+			if (loc.getDeviceId() == deviceId) {
+				lastLocation = loc;
+			}
+		}
+		
+		if (lastLocation != null) {
+			simulateLocation(lastLocation);
+			return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+		} else {
+			System.out.print("\\n Simulate Location Failed - no previous location");
+			return new ResponseEntity<Boolean>(false, HttpStatus.OK);
+		}
+		
+	}
 
 	// Device Status
 	@RequestMapping(value = "/sendDeviceStatus", method = RequestMethod.POST)
@@ -144,5 +167,36 @@ public class Controller {
 		System.out.print("\n getDeviceStatus: " + deviceStatus);
 		return new ResponseEntity<DeviceStatus>(deviceStatus, HttpStatus.OK);
 	}
+	
+	/**
+	 * Simulate Location
+	 */
+	private void simulateLocation(Location location) {
+		System.out.print("\n simulating location.. ");
+		
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				for (int i = 1; i<= 20 ; i++) {
+					Location nextLocation = new Location();
+					nextLocation.setDeviceId(location.getDeviceId());
+					nextLocation.setLat(location.getLat() + i * 3);
+					nextLocation.setLon(location.getLon() + i * 3);
+					nextLocation.setTimeStamp(location.getTimeStamp());
+					
+					System.out.println("\n Adding location : " + nextLocation);
+					locations.add(nextLocation);
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+				
+			}
+		}).start();
+	}
+	
 
 }
