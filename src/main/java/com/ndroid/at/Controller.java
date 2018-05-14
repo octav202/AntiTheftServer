@@ -27,6 +27,8 @@ public class Controller {
 	private static HashMap<Integer, DeviceStatus> deviceStatuses = new HashMap<Integer, DeviceStatus>();
 	static {
 
+		devices.put(1, new Device(1, "device", "pass"));
+		
 //		locations.add(new Location(1, 10.0, 10.0, "10:01"));
 //		locations.add(new Location(1, 20.0, 20.0, "10:02"));
 //		locations.add(new Location(1, 30.0, 30.0, "10:03"));
@@ -84,7 +86,7 @@ public class Controller {
 		devices.put(device.getDeviceId(), device);
 
 		// Add Initial Device Status
-		deviceStatuses.put(device.getDeviceId(), new DeviceStatus(device.getDeviceId(), 0, 0, 0, 0, 0, 0, 0));
+		deviceStatuses.put(device.getDeviceId(), new DeviceStatus(device.getDeviceId(), 0, 0, 0, 0, 0, 0, 0, 0));
 
 		return new ResponseEntity<Integer>(nextId, HttpStatus.OK);
 	}
@@ -160,9 +162,16 @@ public class Controller {
 	}
 
 	@RequestMapping(value = "/getDeviceStatus")
-	public ResponseEntity<DeviceStatus> getDeviceStatus(@RequestParam(value = "id", defaultValue = "0") String id) {
+	public ResponseEntity<DeviceStatus> getDeviceStatuids(@RequestParam(value = "id", defaultValue = "0") String id) {
 		System.out.print("\n getDeviceStatus() : " + id);
 		DeviceStatus deviceStatus = deviceStatuses.get(Integer.parseInt(id));
+		
+		if (deviceStatus == null) {
+			// Add Initial Device Status
+			deviceStatus = new DeviceStatus(Integer.parseInt(id), 0, 0, 0, 0, 0, 0, 0, 0);
+			deviceStatuses.put(Integer.parseInt(id), deviceStatus);
+			System.out.print("\n Device Status initialized: " + deviceStatus);
+		}
 		
 		System.out.print("\n getDeviceStatus: " + deviceStatus);
 		return new ResponseEntity<DeviceStatus>(deviceStatus, HttpStatus.OK);
