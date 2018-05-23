@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ndroid.at.models.Device;
+import com.ndroid.at.models.DeviceAlert;
 import com.ndroid.at.models.DeviceStatus;
 import com.ndroid.at.models.Location;
 
@@ -25,9 +26,14 @@ public class Controller {
 	private static HashMap<Integer, Device> devices = new HashMap<Integer, Device>();
 	private static List<Location> locations = new ArrayList<Location>();
 	private static HashMap<Integer, DeviceStatus> deviceStatuses = new HashMap<Integer, DeviceStatus>();
+	private static HashMap<Integer, DeviceAlert> deviceAlerts = new HashMap<Integer, DeviceAlert>();
+	
 	static {
 
+		// Test Device
 		devices.put(1, new Device(1, "device", "pass"));
+		deviceStatuses.put(1, new DeviceStatus(1, 0, 0, 0, 0, 0, 0, 0, 0, 0));
+		deviceAlerts.put(1, new DeviceAlert(1, "", "", ""));
 		
 //		locations.add(new Location(1, 10.0, 10.0, "10:01"));
 //		locations.add(new Location(1, 20.0, 20.0, "10:02"));
@@ -35,8 +41,7 @@ public class Controller {
 //		locations.add(new Location(1, 40.0, 40.0, "10:04"));
 //		locations.add(new Location(1, 50.0, 50.0, "10:05"));
 //		locations.add(new Location(1, 60.0, 60.0, "10:06"));
-
-//		deviceStatuses.put(1, new DeviceStatus(1, 1, 1, 1, 1, 1, 0));
+		
 	}
 
 	// Device
@@ -86,8 +91,11 @@ public class Controller {
 		devices.put(device.getDeviceId(), device);
 
 		// Add Initial Device Status
-		deviceStatuses.put(device.getDeviceId(), new DeviceStatus(device.getDeviceId(), 0, 0, 0, 0, 0, 0, 0, 0));
+		deviceStatuses.put(device.getDeviceId(), new DeviceStatus(device.getDeviceId(), 0, 0, 0, 0, 0, 0, 0, 0, 0));
 
+		// Add Initial Alert
+		deviceAlerts.put(device.getDeviceId(), new DeviceAlert(device.getDeviceId(), "", "", ""));
+		
 		return new ResponseEntity<Integer>(nextId, HttpStatus.OK);
 	}
 
@@ -162,19 +170,45 @@ public class Controller {
 	}
 
 	@RequestMapping(value = "/getDeviceStatus")
-	public ResponseEntity<DeviceStatus> getDeviceStatuids(@RequestParam(value = "id", defaultValue = "0") String id) {
+	public ResponseEntity<DeviceStatus> getDeviceStatus(@RequestParam(value = "id", defaultValue = "0") String id) {
 		System.out.print("\n getDeviceStatus() : " + id);
 		DeviceStatus deviceStatus = deviceStatuses.get(Integer.parseInt(id));
 		
 		if (deviceStatus == null) {
 			// Add Initial Device Status
-			deviceStatus = new DeviceStatus(Integer.parseInt(id), 0, 0, 0, 0, 0, 0, 0, 0);
+			deviceStatus = new DeviceStatus(Integer.parseInt(id), 0, 0, 0, 0, 0, 0, 0, 0, 0);
 			deviceStatuses.put(Integer.parseInt(id), deviceStatus);
 			System.out.print("\n Device Status initialized: " + deviceStatus);
 		}
 		
 		System.out.print("\n getDeviceStatus: " + deviceStatus);
 		return new ResponseEntity<DeviceStatus>(deviceStatus, HttpStatus.OK);
+	}
+	
+	// Device Alerts
+	@RequestMapping(value = "/sendDeviceAlert", method = RequestMethod.POST)
+	public ResponseEntity<DeviceAlert> sendDeviceAlert(@RequestBody DeviceAlert deviceAlert) {
+		System.out.print("\n sendDeviceAlert() : " + deviceAlert);
+
+		if (deviceAlerts != null) {
+			deviceAlerts.put(deviceAlert.getDeviceId(), deviceAlert);
+		}
+
+		System.out.print("\n sendDeviceAlert: " + deviceAlert);
+		return new ResponseEntity<DeviceAlert>(deviceAlert, HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/getDeviceAlert")
+	public ResponseEntity<DeviceAlert> getDeviceAlert(@RequestParam(value = "id", defaultValue = "0") String id) {
+		System.out.print("\n getDeviceAlert() : " + id);
+		DeviceAlert deviceAlert = deviceAlerts.get(Integer.parseInt(id));
+		
+		if (deviceAlert == null) {
+			System.out.print("\n No Device Alert Set.");
+		}
+		
+		System.out.print("\n getDeviceAlert: " + deviceAlert);
+		return new ResponseEntity<DeviceAlert>(deviceAlert, HttpStatus.OK);
 	}
 	
 	/**
