@@ -157,8 +157,7 @@ public class Controller {
 			lastLocation.setTimeStamp(timeStamp);
 		} 
 		
-		simulateLocation(lastLocation);
-		return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+		return new ResponseEntity<Boolean>(simulateLocation(lastLocation), HttpStatus.OK);
 	}
 
 	// Device Status
@@ -219,10 +218,14 @@ public class Controller {
 	/**
 	 * Simulate Location
 	 */
-	private void simulateLocation(Location location) {
+	private boolean simulateLocation(Location location) {
 		System.out.print("\n simulating location.. ");
 		
 		DeviceStatus status = deviceStatuses.get(location.getDeviceId());
+		
+		if (status.getLocationFrequency()==0) {
+			return false;
+		}
 		
 		locations.add(location);
 		new Thread(new Runnable() {
@@ -249,6 +252,8 @@ public class Controller {
 				
 			}
 		}).start();
+		
+		return true;
 	}
 	
 
