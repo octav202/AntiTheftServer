@@ -1,6 +1,8 @@
 package com.ndroid.at;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -146,14 +148,17 @@ public class Controller {
 			}
 		}
 		
-		if (lastLocation != null) {
-			simulateLocation(lastLocation);
-			return new ResponseEntity<Boolean>(true, HttpStatus.OK);
-		} else {
-			System.out.print("\\n Simulate Location Failed - no previous location");
-			return new ResponseEntity<Boolean>(false, HttpStatus.OK);
-		}
+		if (lastLocation == null) {
+			lastLocation = new Location();
+			lastLocation.setDeviceId(deviceId);
+			lastLocation.setLat(45.4459525);
+			lastLocation.setLon(28.051898);
+			String timeStamp = new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime());
+			lastLocation.setTimeStamp(timeStamp);
+		} 
 		
+		simulateLocation(lastLocation);
+		return new ResponseEntity<Boolean>(true, HttpStatus.OK);
 	}
 
 	// Device Status
@@ -217,6 +222,9 @@ public class Controller {
 	private void simulateLocation(Location location) {
 		System.out.print("\n simulating location.. ");
 		
+		DeviceStatus status = deviceStatuses.get(location.getDeviceId());
+		
+		locations.add(location);
 		new Thread(new Runnable() {
 			
 			@Override
@@ -224,14 +232,16 @@ public class Controller {
 				for (int i = 1; i<= 20 ; i++) {
 					Location nextLocation = new Location();
 					nextLocation.setDeviceId(location.getDeviceId());
-					nextLocation.setLat(location.getLat() + i * 3);
-					nextLocation.setLon(location.getLon() + i * 3);
-					nextLocation.setTimeStamp(location.getTimeStamp());
+					nextLocation.setLat(location.getLat() - i * 0.0005f);
+					nextLocation.setLon(location.getLon() - i * 0.0005f);
+					
+					String timeStamp = new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime());
+					nextLocation.setTimeStamp(timeStamp);
 					
 					System.out.println("\n Adding location : " + nextLocation);
 					locations.add(nextLocation);
 					try {
-						Thread.sleep(1000);
+						Thread.sleep(1000 * status.getLocationFrequency());
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
