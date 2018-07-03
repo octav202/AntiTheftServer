@@ -22,6 +22,14 @@ import com.ndroid.at.models.DeviceAlert;
 import com.ndroid.at.models.DeviceStatus;
 import com.ndroid.at.models.Location;
 
+/**
+ * 
+ * Fix Port
+ * sudo netstat -nlp | grep 8080
+ * tcp6       0      0 :::8080                 :::*                    LISTEN      1186/tnsls
+ * sudo kill -9 1186
+ */
+
 @RestController
 public class Controller {
 
@@ -36,13 +44,6 @@ public class Controller {
 		devices.put(1, new Device(1, "device", "pass"));
 		deviceStatuses.put(1, new DeviceStatus(1, 0, 0, 0, 0, 0, 0, 0, 0, 0));
 		deviceAlerts.put(1, new DeviceAlert(1, "", "", ""));
-		
-//		locations.add(new Location(1, 10.0, 10.0, "10:01"));
-//		locations.add(new Location(1, 20.0, 20.0, "10:02"));
-//		locations.add(new Location(1, 30.0, 30.0, "10:03"));
-//		locations.add(new Location(1, 40.0, 40.0, "10:04"));
-//		locations.add(new Location(1, 50.0, 50.0, "10:05"));
-//		locations.add(new Location(1, 60.0, 60.0, "10:06"));
 		
 	}
 
