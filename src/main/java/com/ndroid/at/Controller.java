@@ -26,8 +26,14 @@ import com.ndroid.at.models.Location;
  * 
  * Fix Port
  * sudo netstat -nlp | grep 8080
- * tcp6       0      0 :::8080                 :::*                    LISTEN      1186/tnsls
+ * tcp6       0      0 :::8080     :::*   LISTEN      1186/tnsls
  * sudo kill -9 1186
+ * 
+ * 
+ * export JAVA_TOOL_OPTIONS="-Dhttps.protocols=TLSv1.2"
+ * export JAVA_HOME="/usr/lib/jvm/java-8-openjdk-amd64/"
+ * ./mvnw dependency:resolve
+ * ./mvnw spring-boot:run
  */
 
 @RestController
